@@ -1,30 +1,40 @@
-import { Component } from "react"
+import React, { useState, useEffect } from "react"
 import { getDogs } from "./DogsAPI"
+import { useParams } from 'react-router-dom'
 
-class DogRandomNum extends Component {
-    constructor() {
-        super()
-        this.state = { dogImages: [] }
+
+
+const DogRandomNum = () =>{
+    const [ dogImages, setDogImages ] = useState([])
+    const [ moreDogs, setMoreDogs ] = useState(false)
+    let   { num }   = useParams()
+
+    console.log(moreDogs)
+
+    const loadMore = () =>{
+       setMoreDogs( Math.floor(Math.random() * 14))
+        
     }
 
-    setDogImages = async () => {
-        const { match } = this.props
-        const dogImages = await getDogs(match.params.num)
-        this.setState({ dogImages })
+    const loadDogImages = async () => {
+         
+        setDogImages( await getDogs(  (moreDogs) ? moreDogs : num) )
     }
 
-    componentDidMount() {
-        this.setDogImages()
-    }
+    useEffect(()=>{
+        return loadDogImages()
+    },[moreDogs])
 
-    render(){
-        const { dogImages } = this.state
-        return (
-            <div>
-                {dogImages.map((image, i) => <img src={image} key={i}/>)}
+    return (
+            <div  className = 'more-dogs'>
+                <div className = 'dog-container'>
+                {dogImages.map((image, i) =>  <img src={image} key={i} /> )}
+                </div>
+            <br />
+            <button onClick = {loadMore}>More Dogs</button>
             </div>
         )
     }
-}
+
 
 export default DogRandomNum

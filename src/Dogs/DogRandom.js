@@ -1,33 +1,26 @@
-import { Component } from "react";
+import React, { useState, useEffect } from "react";
 import { getDog } from "./DogsAPI"
 
-class DogRandom extends Component {
-    constructor() {
-        super()
-        this.state = { dogImage: "" }
+
+const DogRandom = () => {
+
+    const [ dogImage, setDogImage] = useState()
+
+    const setRandomDog = async () => {
+        setDogImage( await getDog() );
     }
 
-    setRandomDog = async () => {
-        const dogImage = await getDog()
-        this.setState({ dogImage })
-    }
-
-    componentDidMount() {
-       this.setRandomDog()
-    }
-
-    render() {
-        const { dogImage } = this.state
+    useEffect (() =>{
+        return setRandomDog()
+    },[])
 
         return (
-            <div>
+            <div className = 'dog-unique'>
                 <img src={dogImage} alt="random dog"/>
-                <button onClick={this.setRandomDog}>New Random Dog</button>
+                <br />
+                <button onClick={()=>{setRandomDog()}}>Random Dog</button>
             </div>
         )
-    }
-
-
 } 
 
 export default DogRandom
